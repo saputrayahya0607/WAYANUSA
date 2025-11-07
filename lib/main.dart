@@ -4,6 +4,8 @@ import 'pages/register_page.dart';
 import 'pages/homepage.dart';       
 import 'pages/chatbotpage.dart';    
 import 'pages/videopage.dart';
+import 'pages/quiz_page.dart';
+import 'pages/cari_dalang_page.dart';
 
 void main() {
   runApp(const WayanusaApp());
@@ -39,6 +41,11 @@ class WayanusaApp extends StatelessWidget {
 
         // route halaman video
         '/video': (context) => const VideoPage(),
+
+        // route halaman quiz
+        '/quiz': (context) => const QuizPage(),
+
+        '/cari_dalang': (context) => const CariDalangPage(), // placeholder
       },
     );
   }
