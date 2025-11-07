@@ -7,6 +7,7 @@ import 'pages/videopage.dart';
 import 'pages/quiz_page.dart';
 import 'pages/cari_dalang_page.dart';
 import 'pages/edit_profile_page.dart';
+import 'pages/profile_page.dart';
 
 void main() {
   runApp(const WayanusaApp());
@@ -49,6 +50,8 @@ class WayanusaApp extends StatelessWidget {
         '/cari_dalang': (context) => const CariDalangPage(),
 
         '/edit_profile': (context) => const EditProfilePage(),
+
+        '/profile': (context) => const ProfilePage(),
       },
     );
   }
