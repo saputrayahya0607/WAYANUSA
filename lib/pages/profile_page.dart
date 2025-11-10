@@ -59,9 +59,24 @@ class _ProfilePageState extends State<ProfilePage> {
                 IconButton(
                   icon: const Icon(Icons.logout, color: Colors.brown),
                   onPressed: () {
+                    // Tampilkan snackbar dulu
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Berhasil logout')),
+                      const SnackBar(
+                        content: Text('Berhasil logout'),
+                        backgroundColor: Colors.brown,
+                        behavior: SnackBarBehavior.floating,
+                      ),
                     );
+
+                    // Tunggu sedikit biar snackbar sempat tampil
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.pushReplacementNamed(context, '/login');
+                      // atau kalau belum pakai named route:
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => const LoginPage()),
+                      // );
+                    });
                   },
                 ),
               ],

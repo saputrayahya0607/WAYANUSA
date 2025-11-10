@@ -247,7 +247,14 @@ class _QuizQuestionPageState extends State<QuizQuestionPage> {
                       timer?.cancel();
                       showAnswerDialog(isCorrect, selectedIndex);
                     },
-              child: const Text("Kirim Jawaban"),
+              child: Text(
+                "Kirim Jawaban",
+                style: const TextStyle(
+                  color: Colors.white, // ⬅️ ubah di sini (misal: Colors.yellow, Colors.black, dll)
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ],
         ),

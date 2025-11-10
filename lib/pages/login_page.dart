@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
-import 'homepage.dart'; // tambahkan halaman tujuan login
+import 'homepage.dart'; // halaman tujuan login
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,6 +38,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Email Field
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
@@ -48,6 +50,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 15),
+
+              // Password Field
               TextField(
                 controller: passwordController,
                 obscureText: true,
@@ -59,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 10),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
@@ -67,16 +72,54 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // 🔹 Tombol Masuk dengan SnackBar
               Center(
                 child: ElevatedButton(
-                  // 🔹 Langsung masuk tanpa inputan
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeWayangPage(),
-                      ),
-                    );
+                    final email = emailController.text.trim();
+                    final password = passwordController.text.trim();
+
+                    if (email.isEmpty || password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text("Email dan Password tidak boleh kosong!"),
+                          backgroundColor: Colors.red,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                      return;
+                    }
+
+                    // Contoh login dummy
+                    if (email == "admin@gmail.com" && password == "12345") {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Login berhasil!"),
+                          backgroundColor: Colors.green,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+
+                      // Tunggu sedikit biar snackbar sempat tampil
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeWayangPage(),
+                          ),
+                        );
+                      });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Email atau password salah."),
+                          backgroundColor: Colors.red,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFB6783D),
@@ -87,11 +130,17 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: const Text(
                     'Masuk',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 15),
+
+              // Daftar link
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +150,9 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const RegisterPage()),
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterPage(),
+                          ),
                         );
                       },
                       child: const Text(
@@ -118,10 +169,10 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               const Divider(thickness: 1),
               const SizedBox(height: 10),
-              const Center(
-                child: Text('Login Menggunakan'),
-              ),
+              const Center(child: Text('Login Menggunakan')),
               const SizedBox(height: 15),
+
+              // Social login
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
