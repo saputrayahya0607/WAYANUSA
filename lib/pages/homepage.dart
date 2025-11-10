@@ -23,13 +23,14 @@ class HomeWayangPage extends StatelessWidget {
                   children: [
                     // Logo di tengah
                     Center(
-                        child: Image.asset(
-                      "assets/logo.png",
-                      height: 31,
-                      // Fallback jika gambar tidak ada
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.image_not_supported, size: 31),
-                    )),
+                      child: Image.asset(
+                        "assets/logo.png",
+                        height: 31,
+                        // Fallback jika gambar tidak ada
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.image_not_supported, size: 31),
+                      ),
+                    ),
 
                     // Avatar di kanan atas
                     Align(
@@ -80,8 +81,11 @@ class HomeWayangPage extends StatelessWidget {
                       color: Colors.grey.shade200,
                     ),
                     child: const Center(
-                        child: Text("Gagal memuat banner",
-                            style: TextStyle(color: Colors.grey))),
+                      child: Text(
+                        "Gagal memuat banner",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -104,7 +108,10 @@ class HomeWayangPage extends StatelessWidget {
                     "Mencari\nDalang",
                   ),
                   _menuItem(
-                      context, "assets/icon_video.png", "Pertunjukan\nWayang"),
+                    context,
+                    "assets/icon_video.png",
+                    "Pertunjukan\nWayang",
+                  ),
                 ],
               ),
 
@@ -204,7 +211,7 @@ class HomeWayangPage extends StatelessWidget {
         if (label == "Pengenalan\nWayang") {
           // Menggunakan pushNamed
           // PASTIKAN Anda sudah menambahkan route '/pengenalan' di main.dart
-          Navigator.pushNamed(context, '/pengenalan');
+          Navigator.pushNamed(context, '/pengenalan_wayang');
         } else if (label == "Quiz") {
           // Menggunakan pushNamed
           Navigator.pushNamed(context, '/quiz');
@@ -252,7 +259,10 @@ class HomeWayangPage extends StatelessWidget {
 
   // --- WIDGET BARU UNTUK KARTU SEJARAH ---
   Widget _buildSejarahCard(
-      BuildContext context, String imagePath, String title) {
+    BuildContext context,
+    String imagePath,
+    String title,
+  ) {
     return Container(
       width: 250, // Lebar setiap kartu
       margin: const EdgeInsets.only(right: 16), // Jarak antar kartu
