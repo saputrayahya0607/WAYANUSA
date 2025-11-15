@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'detail_dalang_page.dart'; // pastikan file ini ada di folder yang sama
+import 'package:wayanusa/services/dalang_api.dart';
+import 'package:wayanusa/models/dalang_model.dart';
+import 'detail_dalang_page.dart';
+import 'dart:convert';
 
 class CariDalangPage extends StatefulWidget {
   const CariDalangPage({Key? key}) : super(key: key);
@@ -10,39 +13,41 @@ class CariDalangPage extends StatefulWidget {
 
 class _CariDalangPageState extends State<CariDalangPage> {
   final TextEditingController _searchController = TextEditingController();
-
-  final List<Map<String, String>> _dalangList = [
-    {
-      "nama": "Ki Purnomo (Padepokan Ora Aji)",
-      "alamat": "Kramat.Kec.Kramat.Kab.Tegal",
-      "gambar": "assets/dalang.png",
-      "detailAlamat":
-          "Jl. Raya Kramat No.91, Kramat, Kec. Kramat, Kabupaten Tegal, Jawa Tengah 52181"
-    },
-    {
-      "nama": "Dalang Deleng",
-      "alamat": "Kramat.Kec.Kramat.Kab.Tegal",
-      "gambar": "assets/dalang.png",
-      "detailAlamat":
-          "Jl. Raya Kramat No.50, Kramat, Kec. Kramat, Kabupaten Tegal, Jawa Tengah 52181"
-    },
-    {
-      "nama": "Dalang Deleng",
-      "alamat": "Kramat.Kec.Kramat.Kab.Tegal",
-      "gambar": "assets/dalang.png",
-      "detailAlamat":
-          "Jl. Raya Kramat No.50, Kramat, Kec. Kramat, Kabupaten Tegal, Jawa Tengah 52181"
-    },
-  ];
-
+  List<Dalang> _dalangList = [];
   String _searchText = "";
+  bool loading = true;
 
   @override
+  void initState() {
+    super.initState();
+    loadDalang();
+  }
+
+  void loadDalang() async {
+    setState(() => loading = true);
+    try {
+      // Ambil dari API (List<Map>)
+      final res = await DalangApi.getAllDalang();
+
+      // Convert Map → Dalang
+      _dalangList = res.map((json) => Dalang.fromJson(json)).toList();
+
+      // Debug: print daftar dalang sebagai JSON
+      final listJson = _dalangList.map((d) => d.toJson()).toList();
+      print("HASIL API: ${jsonEncode(listJson)}");
+
+    } catch (e, stack) {
+      print("Error API: $e");
+      print(stack);
+    } finally {
+      setState(() => loading = false);
+    }
+  }
+  @override
   Widget build(BuildContext context) {
-    final filteredList = _dalangList
-        .where((dalang) =>
-            dalang["nama"]!.toLowerCase().contains(_searchText.toLowerCase()))
-        .toList();
+    final filteredList = _dalangList.where((d) {
+      return d.nama.toLowerCase().contains(_searchText.toLowerCase());
+    }).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -62,79 +67,60 @@ class _CariDalangPageState extends State<CariDalangPage> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // 🔍 Search Field
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: "Cari Video",
-                prefixIcon: const Icon(Icons.search, color: Colors.black54),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _searchText = value;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-
-            // 📜 List Dalang
-            Expanded(
-              child: ListView.builder(
-                itemCount: filteredList.length,
-                itemBuilder: (context, index) {
-                  final dalang = filteredList[index];
-                  return DalangCard(
-                    nama: dalang["nama"]!,
-                    alamat: dalang["alamat"]!,
-                    gambar: dalang["gambar"]!,
-                    detailAlamat: dalang["detailAlamat"]!,
-                  );
-                },
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: "Cari Dalang",
+                      prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() => _searchText = value);
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: filteredList.length,
+                      itemBuilder: (context, index) {
+                        final d = filteredList[index];
+                        return DalangCard(dalang: d);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
 
 class DalangCard extends StatelessWidget {
-  final String nama;
-  final String alamat;
-  final String gambar;
-  final String detailAlamat;
-
-  const DalangCard({
-    Key? key,
-    required this.nama,
-    required this.alamat,
-    required this.gambar,
-    required this.detailAlamat,
-  }) : super(key: key);
+  final Dalang dalang;
+  const DalangCard({Key? key, required this.dalang}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigasi ke halaman detail dalang
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => DetailDalangPage(
-              nama: nama,
-              alamat: alamat,
-              gambar: gambar,
-              detailAlamat: detailAlamat,
+              nama: dalang.nama,
+              alamat: dalang.alamat,
+              detailAlamat: dalang.detailAlamat,
+              gambar: dalang.fotoUrl,
+              latitude: dalang.latitude,
+              longitude: dalang.longitude,
             ),
           ),
         );
@@ -146,49 +132,28 @@ class DalangCard extends StatelessWidget {
           color: Colors.white,
           border: Border.all(color: Colors.brown.shade200),
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
+          boxShadow: const [
+            BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 3)),
           ],
         ),
         child: Row(
           children: [
-            // Gambar Dalang
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                gambar,
-                height: 70,
-                width: 70,
-                fit: BoxFit.cover,
-              ),
+            CircleAvatar(
+              radius: 35,
+              backgroundImage: dalang.fotoUrl.isNotEmpty
+                  ? NetworkImage(dalang.fotoUrl)
+                  : const AssetImage("assets/default_profile.png") as ImageProvider,
             ),
             const SizedBox(width: 14),
-
-            // Nama & Alamat
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    nama,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                      color: Colors.black87,
-                    ),
-                  ),
+                  Text(dalang.nama,
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
                   const SizedBox(height: 4),
-                  Text(
-                    alamat,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Colors.black54,
-                    ),
-                  ),
+                  Text(dalang.alamat,
+                      style: const TextStyle(fontSize: 13, color: Colors.black54)),
                 ],
               ),
             ),

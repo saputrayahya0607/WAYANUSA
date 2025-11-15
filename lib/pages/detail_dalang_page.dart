@@ -4,20 +4,25 @@ import 'package:url_launcher/url_launcher.dart';
 class DetailDalangPage extends StatelessWidget {
   final String nama;
   final String alamat;
-  final String gambar;
   final String detailAlamat;
+  final String gambar;
+  final double latitude;
+  final double longitude;
 
   const DetailDalangPage({
-    Key? key,
+    super.key,
     required this.nama,
     required this.alamat,
-    required this.gambar,
     required this.detailAlamat,
-  }) : super(key: key);
+    required this.gambar,
+    required this.latitude,
+    required this.longitude,
+  });
 
-  Future<void> _bukaGoogleMaps(String query) async {
+  Future<void> _bukaGoogleMaps() async {
     final Uri url = Uri.parse(
-        "https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(query)}");
+        "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude");
+
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
@@ -29,88 +34,98 @@ class DetailDalangPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
       appBar: AppBar(
-        elevation: 1,
         backgroundColor: Colors.white,
+        elevation: 1,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.brown),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Detail Dalang",
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(height: 40),
 
-              // 🖼️ Gambar Dalang (dalam lingkaran)
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+
+              // FOTO DALANG
               CircleAvatar(
-                radius: 70,
-                backgroundColor: Colors.white,
-                backgroundImage: AssetImage(gambar),
+                radius: 75,
+                backgroundColor: Colors.grey[200],
+                backgroundImage: gambar.isNotEmpty
+                    ? NetworkImage(gambar)
+                    : const AssetImage("assets/default_profile.png")
+                        as ImageProvider,
               ),
 
               const SizedBox(height: 20),
 
-              // 🧾 Nama Dalang
+              // NAMA DALANG
               Text(
                 nama,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 6),
+              const SizedBox(height: 10),
+
+              // ALAMAT UTAMA
               Text(
                 alamat,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey[700],
                 ),
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
+
+              // DETAIL ALAMAT
               Text(
                 detailAlamat,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.black54,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
                 ),
                 textAlign: TextAlign.center,
               ),
 
               const SizedBox(height: 30),
 
-              // 🌍 Tombol Google Maps
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[300],
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+              // TOMBOL GOOGLE MAPS
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _bukaGoogleMaps,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green[600],
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  icon: const Icon(Icons.map, color: Colors.white),
+                  label: const Text(
+                    "Buka di Google Maps",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
-                onPressed: () => _bukaGoogleMaps(detailAlamat),
-                child: const Text(
-                  "Masuk Google Maps",
-                  style: TextStyle(color: Colors.black87),
-                ),
               ),
+
+              const SizedBox(height: 20),
             ],
           ),
         ),

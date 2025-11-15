@@ -32,7 +32,7 @@ class WayanusaApp extends StatelessWidget {
       ),
 
       //  halaman pertama tetap login
-      initialRoute: '/login',
+      initialRoute: '/cari_dalang',
 
       //  semua route
       routes: {
