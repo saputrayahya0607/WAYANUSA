@@ -48,7 +48,7 @@ class _VideoPageState extends State<VideoPage> {
         leading: IconButton(
           icon: Container(
             decoration: const BoxDecoration(
-              color: Color(0xFFB6783D), // warna coklat seperti desain login
+              color: Color(0xFFB6783D), 
               shape: BoxShape.circle,
             ),
             padding: const EdgeInsets.all(6),
