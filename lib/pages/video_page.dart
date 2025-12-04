@@ -69,7 +69,7 @@ class _VideoPageState extends State<VideoPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Column(
           children: [
-            // Kolom pencarian
+            // Kolom pencarian ini
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
